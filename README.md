@@ -1,10 +1,10 @@
 
-#[vue规范:](https://github.com/pablohpsilva/vuejs-component-style-guide/blob/master/README-CN.md)
+# [vue规范:](https://github.com/pablohpsilva/vuejs-component-style-guide/blob/master/README-CN.md)
 
 
-#代码规范
+# 代码规范
 >以下规范总结于《编写可维护的JavaScript》《高性能JavaScript》《JavaScript语言精粹》
-###编程风格
+### 编程风格
 
 - 空格与缩进：
 
@@ -166,8 +166,8 @@ for (let prop in object) {
 
 
 
-#编程实践
-##松耦合：
+# 编程实践
+## 松耦合：
 - 不要在css中使用js， 除非是css自带的 如calc()。
 
 
@@ -179,4 +179,4 @@ for (let prop in object) {
 
 - 不要在html中使用js（但是个人认为在vue中不必严格遵循这条规则，因为vue是在html中使用@click @keyup 之类的，但是还是尽量指向methods中的方法吧。）
 
-##抽离应用逻辑
+## 抽离应用逻辑
