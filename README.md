@@ -1,5 +1,5 @@
 
-# [vue规范:](https://github.com/pablohpsilva/vuejs-component-style-guide/blob/master/README-CN.md)
+# [vue规范](https://github.com/pablohpsilva/vuejs-component-style-guide/blob/master/README-CN.md)
 
 
 # 代码规范
@@ -50,7 +50,7 @@ if (true) {
 }
 ```
 
-- 空行 --代码应该由一段一段同系列代码片段组成，而不是一整篇连续文本。
+- 空行：__代码应该由一段一段同系列代码片段组成，而不是一整篇连续文本。__
 
 ```
 if (true) {
@@ -71,7 +71,7 @@ if (true) {
 - 命名：
 变量、函数： 驼峰。
 常量：全大写与下划线组合
-构造函数： 大驼峰（开头大写）
+构造函数： 大驼峰
 
 - 字符串
 html中用双引号 <div class="clearfix"></div>
@@ -164,7 +164,7 @@ for (let prop in object) {
 
 - 尽量避免全局变量，非要用时使用命名空间。
 
-
+---
 
 # 编程实践
 ## 松耦合：
@@ -177,6 +177,71 @@ for (let prop in object) {
 - 不要在js中使用html，如果要判断再渲染，应在vue模版中用v-if v-else-if v-else 判断，而不是在js中返回html字符串。
 
 
-- 不要在html中使用js（但是个人认为在vue中不必严格遵循这条规则，因为vue是在html中使用@click @keyup 之类的，但是还是尽量指向methods中的方法吧。）
+- 不要在html中使用js
 
-## 抽离应用逻辑
+## 事件处理函数
+- 分离功能性代码(与应用相关而不是与用户相关的代码)
+- 不要把event作为参数传递
+- 只让事件处理函数接触event对象
+
+```
+// 不好 （没有分离功能性代码）
+function handleClick() {
+    let popup = document.getElementById('popup');
+    popup.style.left = event.clientX + 'px';
+    popup.style.top = event.clientY + 'px';
+    popup.className = 'reveal';
+}
+
+
+// 不好 （分发event了）
+function showPopup(event) {
+    let popup = document.getElementById('popup');
+    popup.style.left = event.clientX + 'px';
+    popup.style.top = event.clientY + 'px';
+    popup.className = 'reveal';
+}
+function handleClick(event) {
+    showPopup(event);
+}
+
+// 好
+function showPopup(x, y) {
+    let popup = document.getElementById('popup');
+    popup.style.left = x + 'px';
+    popup.style.top = y + 'px';
+    popup.className = 'reveal';
+}
+function handleClick(event) {
+    showPopup(event.clientX, event.clientY);
+}
+
+```
+
+
+- 除非真的要检测某个值是否为null，否则不要与null比较。
+
+- 使用in检测对象是否存在某属性，而不是让其与undefined或null比较。
+> 如果要检测某属性是否某对象的实例属性 使用Object.hasOwnProperty
+
+```
+let person = {
+    name: 'xxx'
+}
+
+// 不好 也许person.age 是可转为 false 的值呢
+if (person.age) {
+
+}
+
+// 不好（与undefined或null比较） 也许 person.age 就是 null 呢
+if (person.age !== null) {
+
+}
+
+// 好
+if ('age' in person) {
+
+}
+```
+
