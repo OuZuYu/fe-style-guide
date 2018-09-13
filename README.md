@@ -245,3 +245,13 @@ if ('age' in person) {
 }
 ```
 
+- 不是你的对象不要动
+- 不覆盖方法
+- 不修改方法
+- 不删除方法
+> 以下对象不要动
+> 原生对象 Object Array……
+> DOM对象  document
+> BOM对象  window
+> 类库对象
+
