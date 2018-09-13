@@ -249,9 +249,47 @@ if ('age' in person) {
 - 不覆盖方法
 - 不修改方法
 - 不删除方法
+
 > 以下对象不要动
+
 > 原生对象 Object Array……
+
 > DOM对象  document
+
 > BOM对象  window
+
 > 类库对象
 
+- 避免检测浏览器，非要检测，只检测旧版浏览器。
+- 不要推断浏览器
+- 解决：直接检测某个特性。
+
+```
+// 不好 （检测浏览器）
+if (navigator.userAgent.indexOf('MSIE 7') > -1) {
+
+}
+
+// 不好 （推断有某方法就是某浏览器，其他浏览器也可能会实现相同的功能。）
+let isIE = !!document.all && document.uniqueID;
+
+// 好
+if (document.getElementById) {
+
+}
+
+```
+
+- 一个兼容各浏览器的方法，应当先检测标准方法，再检测各浏览器的方法，再提供通用的方法。
+
+```
+// 好
+function setAnimate() {
+    return window.requestAnimationFrame ||
+           window.webkitRequestAnimationFrame ||
+           window.mozRequestAnimationFrame ||
+           function (callback) {
+                window.setTimeout(callback, 6000 / 60);
+           };
+};
+```
