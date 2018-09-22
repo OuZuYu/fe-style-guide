@@ -32,7 +32,7 @@ if () {
 
 doSomething(1, true);
 
-.className {
+.class-name {
     position: relative;
 }
 ```
