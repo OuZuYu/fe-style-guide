@@ -4,6 +4,11 @@
 
 # 代码规范
 >以下规范总结于《编写可维护的JavaScript》《高性能JavaScript》《JavaScript语言精粹》
+
+***
+
+## 第一部分
+
 ### 编程风格
 
 - 空格与缩进：
@@ -70,7 +75,9 @@ if (true) {
 
 - 命名：
 变量、函数： 驼峰。
+
 常量：全大写与下划线组合
+
 构造函数： 大驼峰
 
 - 字符串
@@ -295,3 +302,66 @@ function setAnimate() {
            };
 };
 ```
+
+***
+
+## 第二部分
+
+- script 在 </body> 前引入。
+
+- 所以尽可能使用局部变量，如果跨作用域的值被引用一次以上，则缓存。
+
+```
+// 不好
+function init() {
+    let bd = document.body,
+        links = document.getElementsByTagName('a');
+        i = 0,
+        len = links.length;
+
+    while(i < len) {
+        update(links[i++]);
+    }
+
+    document.getElementById('goBtn').onclick = function() {
+        start();
+    }
+
+    bd.className = 'active';
+}
+
+// 好 document处于作用域中很深的位置，并且多次引用，应缓存起来。
+function init() {
+    let doc = document,
+        bd = doc.body,
+        links = doc.getElementsByTagName('a');
+        i = 0,
+        len = links.length;
+
+    while(i < len) {
+        update(links[i++]);
+    }
+
+    doc.getElementById('goBtn').onclick = function() {
+        start();
+    }
+
+    bd.className = 'active';
+}
+```
+
+- 不要使用with，with使得局部变量处于作用域链中第二的位置，访问代价更高。
+> 其实try catch同理：会把错误对象推倒作用域首位，但是try catch是非常有用的语句，不建议弃用。
+> 解决方法是讲错误委托给函数
+
+```
+// 好
+try {
+    func();
+} catch(err) {
+    handleErr(err); // 委托给一个函数处理
+}
+
+```
+
+- 小心使用闭包，闭包使得活动对象无法销毁，存在更多内存开销，可配合以上说的将跨作用域的变量缓存，减轻负担。
