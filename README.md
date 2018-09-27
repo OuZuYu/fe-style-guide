@@ -365,3 +365,22 @@ try {
 ```
 
 - 小心使用闭包，闭包使得活动对象无法销毁，存在更多内存开销，可配合以上说的将跨作用域的变量缓存，减轻负担。
+
+- 对象成员嵌套越深，读取越慢，localhost.href 总是比 window.location.href 要快。
+
+- 一个函数中，如果一个对象被引用两次以上，就应该缓存起来，避免重复读取。
+
+```
+// 不好
+function hasEitherClass(ele, className1, className2) {
+    return element.classNam === className1 || element.classNam === className2;
+}
+
+// 好
+function hasEitherClass(ele, className1, className2) {
+    let curClassName = element.classNam;
+    return curClassName === className1 || curClassName === className2;
+}
+```
+
+待续……
