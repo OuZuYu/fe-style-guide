@@ -307,9 +307,9 @@ function setAnimate() {
 
 ## 第二部分
 
-- script 在 </body> 前引入。
+- script 在body闭标签前引入。
 
-- 所以尽可能使用局部变量，如果跨作用域的值被引用一次以上，则缓存。
+- 尽可能使用局部变量，如果跨作用域的值被引用一次以上，则缓存。
 
 ```
 // 不好
@@ -330,7 +330,7 @@ function init() {
     bd.className = 'active';
 }
 
-// 好 document处于作用域中很深的位置，并且多次引用，应缓存起来。
+// 好 document处于作用域链中很深的位置，并且多次引用，应缓存起来。
 function init() {
     let doc = document,
         bd = doc.body,
@@ -352,7 +352,7 @@ function init() {
 
 - 不要使用with，with使得局部变量处于作用域链中第二的位置，访问代价更高。
 > 其实try catch同理：会把错误对象推倒作用域首位，但是try catch是非常有用的语句，不建议弃用。
-> 解决方法是讲错误委托给函数
+> 解决方法是将错误委托给函数
 
 ```
 // 好
