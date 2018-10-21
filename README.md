@@ -7,7 +7,7 @@
 
 ***
 
-## 第一部分
+## 第一部分： 规范
 
 ### 编程风格
 
@@ -79,6 +79,8 @@ if (true) {
 常量：全大写与下划线组合
 
 构造函数： 大驼峰
+
+[可使用缩写](https://blog.csdn.net/liu_yude/article/details/45317307)
 
 - 字符串
 html中用双引号 <div class="clearfix"></div>
@@ -305,7 +307,7 @@ function setAnimate() {
 
 ***
 
-## 第二部分
+## 第二部分： 性能
 
 - script 在body闭标签前引入。
 
@@ -352,7 +354,7 @@ function init() {
 
 - 不要使用with，with使得局部变量处于作用域链中第二的位置，访问代价更高。
 > 其实try catch同理：会把错误对象推倒作用域首位，但是try catch是非常有用的语句，不建议弃用。
-> 解决方法是将错误委托给函数
+> 解决方法是将错误委托给函数。
 
 ```
 // 好
@@ -368,7 +370,7 @@ try {
 
 - 对象成员嵌套越深，读取越慢，localhost.href 总是比 window.location.href 要快。
 
-- 一个函数中，如果一个对象被引用两次以上，就应该缓存起来，避免重复读取。
+- 如果一个对象属性被引用两次以上，就应该缓存起来，避免重复读取。
 
 ```
 // 不好
@@ -382,5 +384,172 @@ function hasEitherClass(ele, className1, className2) {
     return curClassName === className1 || curClassName === className2;
 }
 ```
+
+-
+
+- 访问dom非常低效，应减少dom访问。
+
+```
+// 不好
+function innerHTMLLoop () {
+    for (var count = 0; count < 1000; count++) {
+        document.getElementById('here').innerHTML += 'a';
+    }
+}
+
+// 好
+function innerHTMLLoop () {
+    var content = '';
+
+    for (var count = 0; count < 1000; count++) {
+        count += 'a';
+    }
+    document.getElementById('here').innerHTML = content;
+}
+```
+
+- 减少重排与重绘，避免重排队列强制刷新。
+
+- 使用事件委托。
+
+- 提高循环性能可减少迭代次数或减轻每次迭代处理的事务
+
+- 避免for in循环，除非要循环对象的原型属性。
+
+- 循环时缓存length，避免多次读取。
+
+- 颠倒循环更快（减少了一次判断）。
+
+```
+let arr = [3,2,1];
+for(let i = arr.length; i--; ) {
+    console.log(arr[i]); // 1 2 3
+}
+
+let j = arr.length;
+while(j--) {
+    console.log(arr[j]); // 1 2 3
+}
+```
+
+- 如果循环次数在1000以上，使用达夫设备。
+
+- for循环比forEach快，因forEach要对每项调用方法。
+
+- 条件数量大时 switch 比 if-else 快。
+
+- if else优化
+> 确保最可能出现的条件放首位
+> if else 嵌套
+> 用查找表的方法代替
+
+```
+// 好 if else 嵌套
+if (value < 6){
+  if (value < 3){
+    if (value == 0){
+      return result0;
+    } else if (value == 1){
+      return result1;
+    } else {
+      return result2;
+    }
+  } else {
+  if (value == 3){
+      return result3;
+    } else if (value == 4){
+      return result4;
+    } else {
+      return result5;
+    }
+  }
+} else {
+  if (value < 8){
+    if (value == 6){
+      return result6;
+    } else {
+      return result7;
+    }
+  } else {
+    if (value == 8){
+      return result8;
+    } else if (value == 9){
+      return result9;
+    } else {
+      return result10;
+    }
+  }
+}
+
+// 好 查找表代替if else
+// 数组
+var results = [result0, result1, result2, result3...]
+return results[value];
+
+//对象
+var obj = {
+    num1: '未发货',
+    num2: '已发货',
+    num3: '已到货',
+}
+//对象成员查找
+return obj[num1];
+```
+
+- 若一个任务运行过长（超过100毫秒)，则利用定时器分割成小任务或者使用Web Workers。
+
+```
+function save () {
+    let tasks = [open, write, close];
+
+    setTimeout(() => {
+        let task = tasks.shift();
+        task();
+
+        if (tasks.length) {
+            setTimeout(arguments.callee, 25);
+        }
+    }, 25);
+}
+```
+
+- 避免eval setTimeout setInterval 的双重求值
+
+- 避免每次都做同一件事
+
+```
+// 不好 函数每次执行都判断一次是否支持addEventListener
+function addHandle(target, eventType, handler) {
+    if (target.addEventListener) {
+        target.addEventListener(eventType, handler, false);
+    } else {
+        target.attachEvent('on' + eventType, handler);
+    };
+}
+
+// 好 第一次执行判断，判断完成覆盖掉原方法。
+function addHandle(target, eventType, handler) {
+    if (target.addEventListener) {
+        addHandle = function() {
+            target.addEventListener(eventType, handler, false);
+        }
+    } else {
+        addHandle = function() {
+            target.attachEvent('on' + eventType, handler);
+        }
+    };
+}
+
+// 好
+let addHandle = document.body.addEventListener ?
+                addHandle = function() {
+                   target.addEventListener(eventType, handler, false);
+                }:
+                function() {
+                    target.attachEvent('on' + eventType, handler);
+                };
+```
+
+## 第三部分
 
 待续……
