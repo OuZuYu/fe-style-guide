@@ -542,7 +542,7 @@ function addHandle(target, eventType, handler) {
 
 // 好
 let addHandle = document.body.addEventListener ?
-                addHandle = function() {
+                function() {
                    target.addEventListener(eventType, handler, false);
                 }:
                 function() {
