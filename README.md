@@ -550,6 +550,3 @@ let addHandle = document.body.addEventListener ?
                 };
 ```
 
-## 第三部分
-
-待续……
